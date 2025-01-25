@@ -8,69 +8,65 @@ using Unity.VisualScripting;
 namespace Base {
 
     public class BaseEntity : MonoBehaviour {
-        public EntityData data;
+        public Entity data;
         public Guid guid;
 
         public event Action OnInitializeComponent;
 
         private void Start() {
             Initialize("passive_animal");
-            Debug.Log(data.Identifier);
         }
 
         public void Initialize(string entityID) {
-            // temporary, will search inside default behavior pack based on "base" namespace later
-            if (!JSONDeserializer.TryGetFromJson($"{Application.streamingAssetsPath}/behavior_packs/default/entities/{entityID}.json", out data)) {
+            // temp for testing
+            string path = $"{Application.streamingAssetsPath}/behavior_packs/default/entities/{entityID}.json";
+            if (!Utils.JsonDeserializer.TryParseJson<Entity>(path, out data)) {
                 Destroy(gameObject);
-                return;
             }
+
             guid = Guid.NewGuid();
 
-            //EntityComponentFactory.AddEntityComponents(this, data.Components);
+            EntityComponentFactory.AddEntityComponents(this, data.Components);
         }
 
         public void InitializeComponents() {
             OnInitializeComponent?.Invoke();
         }
     }
-}
 
-[System.Serializable]
-public class EntityJson {
+    public class Entity {
 
-    [JsonProperty("format_version")]
-    public string FormatVersion { get; set; }
+        [JsonProperty("identifier")]
+        public string Identifier { get; set; }
 
-    [JsonProperty("base.entity")]
-    public EntityData Entity { get; set; }
-}
+        [JsonProperty("description")]
+        public EntityDescription Description { get; set; }
 
-public class EntityData {
+        public class EntityDescription {
 
-    [JsonProperty("identifier")]
-    public string Identifier { get; set; }
+            [JsonProperty("display_name")]
+            public string DisplayName { get; set; }
 
-    [JsonProperty("description")]
-    public Description _Description { get; set; }
+            [JsonProperty("category")]
+            [JsonConverter(typeof(StringEnumConverter))]
+            public EntityCategory Category { get; set; }
 
-    public class Description {
+            [JsonProperty("is_spawnable")]
+            public bool IsSpawnable { get; set; }
 
-        [JsonProperty("display_name")]
-        public string DisplayName { get; set; }
+            [JsonProperty("is_summonable")]
+            public bool IsSummonable { get; set; }
 
-        [JsonProperty("category")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public EntityCategory Category { get; set; }
-
-        public enum EntityCategory {
-            None,
-            Animal,
-            Monster,
-            Boss,
-            Player
+            public enum EntityCategory {
+                None,
+                Animal,
+                Monster,
+                Boss,
+                Player
+            }
         }
-    }
 
-    [JsonProperty("components")]
-    public Dictionary<string, Dictionary<string, object>> Components { get; set; }
+        [JsonProperty("components")]
+        public Dictionary<string, Dictionary<string, object>> Components { get; set; }
+    }
 }
