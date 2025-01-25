@@ -1,0 +1,81 @@
+{
+    "entities": [
+        {
+            "entityID": "base.test",
+            "displayName": "Test",
+            "category": "Animal",
+            "components": {
+                "base.ai": {
+                    "base.ai.behavior": "base.behavior.passive"
+                }
+            }
+        },
+
+        {
+            "entityID": "base.player",
+            "displayName": "Player",
+            "category": "player",
+            "components": {
+                "base.player": {
+                },
+                "base.health": {
+                    "maxHealth": 10,
+                    "regenPerSecond": 2
+                },
+                "base.look": {
+                    "lookSpeed": 5
+                },
+                "base.move": {
+                    "moveSpeed": 5.5
+                },
+                "base.jump": {
+                    "jumpForce": 5
+                },
+                "base.body": {
+                    "width": 1.0,
+                    "height": 2.0
+                }
+            }
+        },
+        {
+            "entityID": "base:passive_animal",
+            "displayName": "Passive Animal",
+            "category": "Animal",
+            "components": {
+                "Health": {
+                    "maxHealth": 10,
+                    "regenPerSecond": 2
+                },
+                "AI": {
+                    "behavior": "passive",
+                    "goals": [
+                        "RandomIdleWander"
+                    ]
+                },
+                "Look": {},
+                "Move": {
+                    "moveSpeed": 5.5
+                },
+                "Body": {
+                    "width": 1.0,
+                    "height": 1.0
+                }
+            }
+        },
+        {
+            "entityID": "base:agressive_animal",
+            "displayName": "Agressive Animal",
+            "category": "Animal",
+            "components": {
+                "Health": {
+                    "maxHealth": 15,
+                    "regenPerSecond": 1
+                },
+                "AI": {
+                    "behavior": "agressive"
+                },
+                "Look": {}
+            }
+        }
+    ]
+}
