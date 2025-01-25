@@ -54,6 +54,7 @@ public class RandomIdleWanderGoal : _BaseGoal {
                 // randomize next wander time
                 nextWanderTime = Random.Range(minWanderDelay, maxWanderDelay);
 
+                /*
                 // perform random look in the entity's Look
                 entity.Look.RandomLook(() => {
                     // reset timer
@@ -62,7 +63,7 @@ public class RandomIdleWanderGoal : _BaseGoal {
                     nextWalkTime = Random.Range(minWalkTime, maxWalkTime);
                     // make entity move forward for the walk time
                     entity.Move.MoveForwardForSeconds(nextWalkTime);
-                });
+                });*/
             }
         } else {
             // count up until the next walk time

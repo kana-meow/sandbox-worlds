@@ -16,7 +16,7 @@ public class EntitySpawner : Singleton<EntitySpawner> {
             GameObject newGameObject = new(entityData.DisplayName);
             newGameObject.transform.position = pos;
             BaseEntity newEntity = newGameObject.AddComponent<BaseEntity>();
-            newEntity.Initialize(entityData);
+            //newEntity.Initialize(entityData);
         }
     }
 }
