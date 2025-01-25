@@ -9,13 +9,13 @@
             "is_summonable": true
         },
         "components": {
-            "base.ai": {
+            "base.component.ai": {
                 "behavior": "passive",
                 "goals": [
-                    "base.random_wander"
+                    "base.ai.goal.random_wander"
                 ]
             },
-            "base.health": {
+            "base.component.health": {
                 "value": 20,
                 "max": 20
             }
