@@ -1,38 +1,22 @@
 using UnityEngine;
 
-public class HealthComponent : _BaseComponent {
-    [SerializeField] private int value = 20;
-    private int min_value = -1;
-    private int max_value = -1;
+namespace Base {
 
-    private int max = -1;
+    public class HealthComponent : _BaseComponent {
+        [SerializeField] private int value = 20;
+        private int min_value = -1;
+        private int max_value = -1;
 
-    public float Health {
-        get {
-            return _health;
-        }
-        set {
-            float previousHealth = _health;
-            float clampedValue = Mathf.Clamp(value, 0, maxHealth);
+        private int max = -1;
 
-            if (clampedValue != previousHealth) {
-                _health = clampedValue;
+        public override void OnInitialize() {
+            if (min_value != -1 && max_value != -1) {
+                value = Random.Range(min_value, max_value);
+            }
 
-                /*
-                if (clampedValue <= 0) {
-                    OnDeath?.Invoke();
-                } else if (clampedValue > previousHealth) {
-                    OnHealthIncreased?.Invoke();
-                } else {
-                    OnHealthDecreased?.Invoke();
-                }*/
+            if (max == -1) {
+                max = value;
             }
         }
-    }
-
-    public float maxHealth;
-    public float regenPerSecond;
-
-    public override void OnInitialize() {
     }
 }
