@@ -61,8 +61,12 @@ public class BaseEntity : MonoBehaviour {
 
     public event Action OnInitializeComponent;
 
-    public void Initialize(EntityData data) {
-        this.data = data;
+    public void Initialize(string entityID) {
+        // temporary, will search inside default behavior pack based on "base" namespace
+        if (!JSONDeserializer.TryGetFromJson<EntityData>(Application.dataPath + "/behavior_packs/default/", out data)) {
+            Destroy(gameObject);
+            return;
+        }
         guid = Guid.NewGuid();
 
         EntityComponentFactory.AddEntityComponents(this, data.Components);
