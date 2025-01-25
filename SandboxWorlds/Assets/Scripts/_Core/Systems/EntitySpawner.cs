@@ -9,14 +9,13 @@ public class EntitySpawner : Singleton<EntitySpawner> {
     }
 
     public void SpawnEntity(string entityID, Vector3 pos = default) {
-        EntityData entityData;
-        GlobalRegistry.Instance.TryGetEntity(entityID, out entityData);
+        EntityJson entityData;
+        //GlobalRegistry.Instance.TryGetEntity(entityID, out entityData);
 
-        if (entityData != null) {
-            GameObject newGameObject = new(entityData.DisplayName);
-            newGameObject.transform.position = pos;
-            BaseEntity newEntity = newGameObject.AddComponent<BaseEntity>();
-            //newEntity.Initialize(entityData);
-        }
+        // if (entityData != null) {
+        //     GameObject newGameObject = new(entityData.DisplayName);
+        //    newGameObject.transform.position = pos;
+        //     BaseEntity newEntity = newGameObject.AddComponent<BaseEntity>();
+        //newEntity.Initialize(entityData);
     }
 }

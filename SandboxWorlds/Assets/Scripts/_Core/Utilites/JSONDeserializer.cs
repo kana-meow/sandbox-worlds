@@ -4,14 +4,19 @@ using System.IO;
 
 public static class JSONDeserializer {
 
-    // deserializes object of type 'T' from .json file path
-    public static bool TryGetFromJson<T>(string filePath, out T value) {
+    // deserializes object of type 'EntityJson' from .json file path
+    public static bool TryGetFromJson(string filePath, out EntityData value) {
         if (File.Exists(filePath)) {
             if (Path.GetExtension(filePath).ToLower() == ".json") {
                 try {
                     string json = File.ReadAllText(filePath);
-                    value = JsonConvert.DeserializeObject<T>(json);
-                    return true;
+                    EntityJson entityJson = JsonConvert.DeserializeObject<EntityJson>(json);
+                    if (entityJson.FormatVersion == "pre-alpha") {
+                        value = entityJson.Entity;
+                        return true;
+                    } else {
+                        Debug.LogError($"[JSONDeserializer] Format version '{entityJson.FormatVersion}' is unsupported ({filePath}).");
+                    }
                 }
                 catch (JsonException e) {
                     Debug.LogError($"[JSONDeserializer] Error deserializing file '{filePath}': {e.Message}.");

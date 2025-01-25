@@ -7,9 +7,9 @@ public abstract class _BaseGoal {
     public GoalState State { get; set; }
     public abstract EntityControls[] Controls { get; }
 
-    protected BaseEntity entity;
+    protected Base.BaseEntity entity;
 
-    public _BaseGoal(BaseEntity entity) {
+    public _BaseGoal(Base.BaseEntity entity) {
         this.entity = entity;
     }
 

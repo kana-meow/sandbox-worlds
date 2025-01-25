@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class EntityComponentFactory {
 
-    public static void AddEntityComponents(BaseEntity entity, Dictionary<string, Dictionary<string, object>> components) {
+    public static void AddEntityComponents(Base.BaseEntity entity, Dictionary<string, Dictionary<string, object>> components) {
         foreach (var component in components) {
             // get component type
             Type componentType = Type.GetType(component.Key + "Component");

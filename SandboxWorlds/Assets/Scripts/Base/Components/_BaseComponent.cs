@@ -1,12 +1,12 @@
 using UnityEngine;
 
 public abstract class _BaseComponent : MonoBehaviour {
-    private BaseEntity entity;
+    private Base.BaseEntity entity;
 
-    public BaseEntity Entity {
+    public Base.BaseEntity Entity {
         get {
             if (entity == null) {
-                entity = GetComponent<BaseEntity>();
+                entity = GetComponent<Base.BaseEntity>();
             }
             return entity;
         }
