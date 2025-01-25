@@ -1,37 +1,40 @@
 using UnityEngine;
 
-public abstract class _BaseGoal {
-    public abstract int Priority { get; }
-    public abstract bool IsReplacable { get; }
+namespace Base.AI {
 
-    public GoalState State { get; set; }
-    public abstract EntityControls[] Controls { get; }
+    public abstract class _BaseGoal {
+        public abstract int Priority { get; }
+        public abstract bool IsReplacable { get; }
 
-    protected Base.BaseEntity entity;
+        public GoalState State { get; set; }
+        public abstract EntityControls[] Controls { get; }
 
-    public _BaseGoal(Base.BaseEntity entity) {
-        this.entity = entity;
+        protected Base.Entity entity;
+
+        public _BaseGoal(Base.Entity entity) {
+            this.entity = entity;
+        }
+
+        public abstract bool CanActivate();
+
+        public abstract void Activate();
+
+        public abstract void UpdateGoal();
+
+        public abstract void Deactivate();
     }
 
-    public abstract bool CanActivate();
+    public enum GoalState {
+        Inactive,
+        Pending,
+        Active
+    }
 
-    public abstract void Activate();
-
-    public abstract void UpdateGoal();
-
-    public abstract void Deactivate();
-}
-
-public enum GoalState {
-    Inactive,
-    Pending,
-    Active
-}
-
-public enum EntityControls {
-    Jump,
-    Move,
-    Look,
-    Body,
-    Target
+    public enum EntityControls {
+        Jump,
+        Move,
+        Look,
+        Body,
+        Target
+    }
 }

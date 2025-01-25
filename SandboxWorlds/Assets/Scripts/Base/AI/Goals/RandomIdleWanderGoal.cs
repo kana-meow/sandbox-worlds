@@ -1,10 +1,10 @@
 using UnityEngine;
 
-namespace Base {
+namespace Base.AI.Goal {
 
     public class RandomIdleWanderGoal : _BaseGoal {
 
-        public RandomIdleWanderGoal(BaseEntity entity) : base(entity) {
+        public RandomIdleWanderGoal(Entity entity) : base(entity) {
         }
 
         public override int Priority => 5;
