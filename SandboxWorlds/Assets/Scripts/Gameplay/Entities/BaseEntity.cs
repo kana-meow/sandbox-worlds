@@ -3,53 +3,74 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using Unity.VisualScripting;
 
-public class BaseEntity : MonoBehaviour {
-    public EntityData data;
-    public Guid guid;
+namespace Base {
 
-    public event Action OnInitializeComponent;
+    public class BaseEntity : MonoBehaviour {
+        public EntityData data;
+        public Guid guid;
 
-    private void Start() {
-        Initialize("passive_animal");
-    }
+        public event Action OnInitializeComponent;
 
-    public void Initialize(string entityID) {
-        // temporary, will search inside default behavior pack based on "base" namespace later
-        if (!JSONDeserializer.TryGetFromJson<EntityData>(Application.dataPath + "/behavior_packs/default/" + entityID + ".json", out data)) {
-            Destroy(gameObject);
-            return;
+        private void Start() {
+            Initialize("passive_animal");
+            Debug.Log(data.Identifier);
         }
-        guid = Guid.NewGuid();
 
-        EntityComponentFactory.AddEntityComponents(this, data.Components);
-    }
+        public void Initialize(string entityID) {
+            // temporary, will search inside default behavior pack based on "base" namespace later
+            if (!JSONDeserializer.TryGetFromJson($"{Application.streamingAssetsPath}/behavior_packs/default/entities/{entityID}.json", out data)) {
+                Destroy(gameObject);
+                return;
+            }
+            guid = Guid.NewGuid();
 
-    public void InitializeComponents() {
-        OnInitializeComponent?.Invoke();
+            //EntityComponentFactory.AddEntityComponents(this, data.Components);
+        }
+
+        public void InitializeComponents() {
+            OnInitializeComponent?.Invoke();
+        }
     }
 }
 
 [System.Serializable]
+public class EntityJson {
+
+    [JsonProperty("format_version")]
+    public string FormatVersion { get; set; }
+
+    [JsonProperty("base.entity")]
+    public EntityData Entity { get; set; }
+}
+
 public class EntityData {
 
-    [JsonProperty("entityID")]
-    public string EntityID { get; set; }
+    [JsonProperty("identifier")]
+    public string Identifier { get; set; }
 
-    [JsonProperty("displayName")]
-    public string DisplayName { get; set; }
+    [JsonProperty("description")]
+    public Description _Description { get; set; }
 
-    [JsonProperty("category")]
-    [JsonConverter(typeof(StringEnumConverter))]
-    public EntityCategory Category { get; set; }
+    public class Description {
+
+        [JsonProperty("display_name")]
+        public string DisplayName { get; set; }
+
+        [JsonProperty("category")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public EntityCategory Category { get; set; }
+
+        public enum EntityCategory {
+            None,
+            Animal,
+            Monster,
+            Boss,
+            Player
+        }
+    }
 
     [JsonProperty("components")]
     public Dictionary<string, Dictionary<string, object>> Components { get; set; }
-
-    public enum EntityCategory {
-        Animal,
-        Monster,
-        Boss,
-        Player,
-    }
 }
