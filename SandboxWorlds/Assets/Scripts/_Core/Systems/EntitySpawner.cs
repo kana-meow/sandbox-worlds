@@ -9,7 +9,7 @@ public class EntitySpawner : Singleton<EntitySpawner> {
     }
 
     public void SpawnEntity(string entityID, Vector3 pos = default) {
-        EntityJson entityData;
+        //EntityJson entityData;
         //GlobalRegistry.Instance.TryGetEntity(entityID, out entityData);
 
         // if (entityData != null) {
