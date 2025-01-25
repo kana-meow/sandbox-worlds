@@ -1,7 +1,11 @@
 using UnityEngine;
 
 public class HealthComponent : _BaseComponent {
-    [SerializeField] private float _health;
+    [SerializeField] private int value = 20;
+    private int min_value = -1;
+    private int max_value = -1;
+
+    private int max = -1;
 
     public float Health {
         get {
