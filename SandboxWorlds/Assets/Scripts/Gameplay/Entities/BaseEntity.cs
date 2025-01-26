@@ -26,7 +26,7 @@ namespace Base {
 
             guid = Guid.NewGuid();
 
-            EntityComponentFactory.AddEntityComponents(this, data.Components);
+            Factories.EntityComponentFactory.AddEntityComponents(this, data.Components);
         }
 
         public void InitializeComponents() {
