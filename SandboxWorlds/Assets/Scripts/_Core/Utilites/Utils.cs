@@ -41,19 +41,33 @@ namespace Base {
             return Type.GetType(typeString);
         }
 
-        // makes first letter and each letter after '.' capitalized to match type names e.g.: (base.entity => Base.Entity)
-        private static string ToTypeName(string input) {
+        public static string ToTypeName(string input) {
+            // split input by periods
             string[] parts = input.Split('.');
+            // go through each part
             for (int i = 0; i < parts.Length; i++) {
                 if (!string.IsNullOrWhiteSpace(parts[i])) {
-                    parts[i] = char.ToUpper(parts[i][0]) + parts[i].Substring(1);
-                    // special cases
+                    // split each part by underscores
+                    string[] subParts = parts[i].Split('_');
+                    // go through each subPart
+                    for (int j = 0; j < subParts.Length; j++) {
+                        if (!string.IsNullOrWhiteSpace(subParts[j])) {
+                            // capitalize the first letter of each subpart
+                            subParts[j] = char.ToUpper(subParts[j][0]) + subParts[j].Substring(1);
+                        }
+                    }
+
+                    // join the subparts back together without underscores
+                    parts[i] = string.Join("", subParts);
+
+                    // handle special cases (e.g., "AI")
                     if (parts[i].ToUpper() == "AI") {
                         parts[i] = parts[i].ToUpper();
                     }
                 }
             }
 
+            // join parts back together with periods for namespaces
             return string.Join(".", parts);
         }
 
