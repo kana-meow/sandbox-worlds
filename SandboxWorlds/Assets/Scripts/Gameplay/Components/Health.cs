@@ -19,6 +19,15 @@ namespace Base.Component {
             }
         }
 
+        public void ChangeHealth(int amount) {
+            value = Mathf.Clamp(value + amount, 0, max);
+
+            if (value == 0) {
+                // trigger death logic later
+                Destroy(gameObject);
+            }
+        }
+
         protected class HealthValueConverter : JsonConverter {
 
             public override bool CanConvert(Type objectType) {
