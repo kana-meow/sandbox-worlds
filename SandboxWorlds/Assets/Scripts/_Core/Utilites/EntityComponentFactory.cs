@@ -1,69 +1,45 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Base.Factories {
 
     public static class EntityComponentFactory {
 
-        public static void AddEntityComponents(Base.BaseEntity entity, Dictionary<string, Dictionary<string, object>> components) {
+        public static void AddEntityComponents(Base.BaseEntity entity, Dictionary<string, JObject> components) {
+            // go through each component
             foreach (var component in components) {
                 // get component type
-                System.Type componentType = Utils.GetTypeFromString(component.Key);
-                if (componentType != null) {
-                    // check if component type inherits from BaseComponent
-                    if (typeof(_BaseComponent).IsAssignableFrom(componentType)) {
-                        // add component
-                        _BaseComponent newComponent = (_BaseComponent)entity.gameObject.AddComponent(componentType);
-                        entity.OnInitializeComponent += () => {
-                            newComponent.OnInitialize();
-                        };
+                Type componentType = Utils.GetTypeFromString(component.Key);
+                if (componentType == null) {
+                    Debug.LogError($"[EntityComponentFactory] Type '{component.Key}' could not be found.");
+                    continue;
+                }
 
-                        foreach (var param in component.Value) {
-                            // find property by name and assign value
-                            PropertyInfo property = componentType.GetProperty(param.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-                            if (property != null && property.CanWrite) {
-                                // check if JsonConverterAttribute is applied to property
-                                JsonConverterAttribute converterAttribute = property.GetCustomAttribute(typeof(JsonConverterAttribute)) as JsonConverterAttribute;
-                                if (converterAttribute != null) {
-                                    // use JsonConverter specified in attribute
-                                    JsonConverter converter = (JsonConverter)Activator.CreateInstance(converterAttribute.ConverterType);
-                                    object valueToAssign = converter.ReadJson(new JsonTextReader(new StringReader(param.Value.ToString())), property.PropertyType, null, new JsonSerializer());
-                                    property.SetValue(newComponent, valueToAssign);
-                                } else {
-                                    object valueToAssign = Utils.ConvertToType(param.Value, property.PropertyType);
-                                    property.SetValue(newComponent, valueToAssign);
-                                }
-                                continue;
-                            } else {
-                                // if not a property, it might be a field
-                                FieldInfo field = componentType.GetField(param.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-                                if (field != null) {
-                                    // check if JsonConverterAttribute is applied to field
-                                    JsonConverterAttribute converterAttribute = field.GetCustomAttribute(typeof(JsonConverterAttribute)) as JsonConverterAttribute;
-                                    if (converterAttribute != null) {
-                                        // use JsonConverter specified in field
-                                        JsonConverter converter = (JsonConverter)Activator.CreateInstance(converterAttribute.ConverterType);
-                                        object valueToAssign = converter.ReadJson(new JsonTextReader(new StringReader(param.Value.ToString())), field.FieldType, null, new JsonSerializer());
-                                        field.SetValue(newComponent, valueToAssign);
-                                    } else {
-                                        object valueToAssign = Utils.ConvertToType(param.Value, field.FieldType);
-                                        field.SetValue(newComponent, valueToAssign);
-                                    }
-                                    continue;
-                                }
-                            }
+                // ensure that componentType inherits from _BaseComponent
+                if (!typeof(_BaseComponent).IsAssignableFrom(componentType)) {
+                    Debug.LogError($"[EntityComponentFactory] Type '{componentType}' does not inherit '_BaseComponent'.");
+                    continue;
+                }
 
-                            Debug.LogError($"[EntityComponentFactory] No parameter with name '{param.Key}' could be found inside '{componentType}'! (Make sure parameter is writable)");
-                        }
-                    } else {
-                        Debug.LogError($"[EntityComponentFactory] Component of type '{componentType}' does not inherit from '_BaseComponent'! (Make sure {componentType} inherits _BaseComponent.)");
-                    }
-                } else {
-                    Debug.LogError($"[EntityComponentFactory] Component of type '{componentType}' couldn't be found!");
+                // add component to entity and subscribe it to OnInitializeComponent
+                _BaseComponent newComponent = (_BaseComponent)entity.gameObject.AddComponent(componentType);
+                entity.OnInitializeComponent += newComponent.OnInitialize;
+
+                // deserialize component's data with JObject
+                JObject componentData = component.Value;
+                try {
+                    // use JObject.ToObject to populate the component
+                    JsonSerializer serializer = JsonSerializer.CreateDefault();
+                    serializer.Populate(componentData.CreateReader(), newComponent);
+                }
+                catch (Exception e) {
+                    Debug.LogError($"[EntityComponentFactory] Failed to populate component '{componentType}': {e.Message}");
                 }
             }
 
