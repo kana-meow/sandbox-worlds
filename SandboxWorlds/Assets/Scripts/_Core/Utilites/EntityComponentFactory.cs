@@ -57,13 +57,13 @@ namespace Base.Factories {
                                 }
                             }
 
-                            Debug.LogError($"[EntityComponentFactory] No parameter with name '{param.Key}' could be found inside '{component.Key}'! (Make sure parameter is writable)");
+                            Debug.LogError($"[EntityComponentFactory] No parameter with name '{param.Key}' could be found inside '{componentType}'! (Make sure parameter is writable)");
                         }
                     } else {
-                        Debug.LogError($"[EntityComponentFactory] Component of type '{component.Key}' does not inherit from '_BaseComponent'! (Make sure {component.Key} inherits _BaseComponent.)");
+                        Debug.LogError($"[EntityComponentFactory] Component of type '{componentType}' does not inherit from '_BaseComponent'! (Make sure {componentType} inherits _BaseComponent.)");
                     }
                 } else {
-                    Debug.LogError($"[EntityComponentFactory] Component of type '{component.Key}' couldn't be found!");
+                    Debug.LogError($"[EntityComponentFactory] Component of type '{componentType}' couldn't be found!");
                 }
             }
 
