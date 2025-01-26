@@ -3,10 +3,32 @@ using Newtonsoft.Json;
 using System.IO;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 namespace Base {
 
     public class Utils : MonoBehaviour {
+
+        public static object ConvertToType(object value, Type targetType) {
+            if (value == null) return null;
+
+            // Handle List<T>
+            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(List<>)) {
+                Type elementType = targetType.GetGenericArguments()[0]; // Get the type of T in List<T>
+                var list = Activator.CreateInstance(targetType) as System.Collections.IList;
+
+                if (value is IEnumerable<object> enumerable) {
+                    foreach (var item in enumerable) {
+                        list.Add(Convert.ChangeType(item, elementType));
+                    }
+                }
+
+                return list;
+            }
+
+            // Handle other types (primitive and compatible types)
+            return Convert.ChangeType(value, targetType);
+        }
 
         public static Type GetTypeFromString(string input) {
             if (string.IsNullOrEmpty(input)) {
