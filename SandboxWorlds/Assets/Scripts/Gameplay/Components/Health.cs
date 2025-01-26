@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Base.Component {
 
-    public class Health : _BaseComponent {
+    public class Health : BaseComponent {
 
         [JsonProperty("value")]
         [JsonConverter(typeof(HealthValueConverter))]
