@@ -2,16 +2,16 @@ using UnityEngine;
 
 namespace Base.AI {
 
-    public abstract class _BaseGoal {
+    public abstract class BaseGoal {
         public abstract int Priority { get; }
         public abstract bool IsReplacable { get; }
 
         public GoalState State { get; set; }
         public abstract EntityControls[] Controls { get; }
 
-        protected Base.Entity entity;
+        protected Base.BaseEntity entity;
 
-        public _BaseGoal(Base.Entity entity) {
+        public BaseGoal(Base.BaseEntity entity) {
             this.entity = entity;
         }
 

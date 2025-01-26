@@ -15,6 +15,9 @@ namespace Base {
 
         private void Start() {
             Initialize("passive_animal");
+
+            Debug.Log(Utils.ToTypeName("base.ai.test"));
+            Debug.Log(Utils.ToTypeName("base.ai.test_goals_bruh.the.s"));
         }
 
         public void Initialize(string entityID) {
