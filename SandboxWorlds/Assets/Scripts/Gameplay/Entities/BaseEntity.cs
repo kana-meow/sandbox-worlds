@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using Unity.VisualScripting;
+using Newtonsoft.Json.Linq;
 
 namespace Base {
 
@@ -67,6 +68,6 @@ namespace Base {
         }
 
         [JsonProperty("components")]
-        public Dictionary<string, Dictionary<string, object>> Components { get; set; }
+        public Dictionary<string, JObject> Components { get; set; }
     }
 }
