@@ -19,13 +19,13 @@ namespace Base.Factories {
                 }
 
                 // ensure that componentType inherits from _BaseComponent
-                if (!typeof(_BaseComponent).IsAssignableFrom(componentType)) {
+                if (!typeof(BaseComponent).IsAssignableFrom(componentType)) {
                     Debug.LogError($"[EntityComponentFactory] Type '{componentType}' does not inherit '_BaseComponent'.");
                     continue;
                 }
 
                 // add component to entity and subscribe it to OnInitializeComponent
-                _BaseComponent newComponent = (_BaseComponent)entity.gameObject.AddComponent(componentType);
+                BaseComponent newComponent = (BaseComponent)entity.gameObject.AddComponent(componentType);
                 entity.OnInitializeComponent += newComponent.OnInitialize;
 
                 // deserialize component's data with JObject
