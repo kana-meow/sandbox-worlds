@@ -10,7 +10,7 @@
         },
         "components": {
             "base.component.ai": {
-                "behavior": "passive",
+                "behavior": "Passive",
                 "goals": [
                     "base.ai.goal.random_wander"
                 ]
