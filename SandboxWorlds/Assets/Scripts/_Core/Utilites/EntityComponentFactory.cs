@@ -1,5 +1,7 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using UnityEngine;
 
@@ -10,7 +12,7 @@ namespace Base.Factories {
         public static void AddEntityComponents(Base.BaseEntity entity, Dictionary<string, Dictionary<string, object>> components) {
             foreach (var component in components) {
                 // get component type
-                Type componentType = Type.GetType(component.Key);
+                System.Type componentType = Utils.GetTypeFromString(component.Key);
                 if (componentType != null) {
                     // check if component type inherits from BaseComponent
                     if (typeof(_BaseComponent).IsAssignableFrom(componentType)) {
@@ -24,15 +26,33 @@ namespace Base.Factories {
                             // find property by name and assign value
                             PropertyInfo property = componentType.GetProperty(param.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                             if (property != null && property.CanWrite) {
-                                object valueToAssign = Utils.ConvertToType(param.Value, property.PropertyType);
-                                property.SetValue(newComponent, valueToAssign);
+                                // check if JsonConverterAttribute is applied to property
+                                JsonConverterAttribute converterAttribute = property.GetCustomAttribute(typeof(JsonConverterAttribute)) as JsonConverterAttribute;
+                                if (converterAttribute != null) {
+                                    // use JsonConverter specified in attribute
+                                    JsonConverter converter = (JsonConverter)Activator.CreateInstance(converterAttribute.ConverterType);
+                                    object valueToAssign = converter.ReadJson(new JsonTextReader(new StringReader(param.Value.ToString())), property.PropertyType, null, new JsonSerializer());
+                                    property.SetValue(newComponent, valueToAssign);
+                                } else {
+                                    object valueToAssign = Utils.ConvertToType(param.Value, property.PropertyType);
+                                    property.SetValue(newComponent, valueToAssign);
+                                }
                                 continue;
                             } else {
                                 // if not a property, it might be a field
                                 FieldInfo field = componentType.GetField(param.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                                 if (field != null) {
-                                    object valueToAssign = Utils.ConvertToType(param.Value, field.FieldType);
-                                    field.SetValue(newComponent, valueToAssign);
+                                    // check if JsonConverterAttribute is applied to field
+                                    JsonConverterAttribute converterAttribute = field.GetCustomAttribute(typeof(JsonConverterAttribute)) as JsonConverterAttribute;
+                                    if (converterAttribute != null) {
+                                        // use JsonConverter specified in field
+                                        JsonConverter converter = (JsonConverter)Activator.CreateInstance(converterAttribute.ConverterType);
+                                        object valueToAssign = converter.ReadJson(new JsonTextReader(new StringReader(param.Value.ToString())), field.FieldType, null, new JsonSerializer());
+                                        field.SetValue(newComponent, valueToAssign);
+                                    } else {
+                                        object valueToAssign = Utils.ConvertToType(param.Value, field.FieldType);
+                                        field.SetValue(newComponent, valueToAssign);
+                                    }
                                     continue;
                                 }
                             }
