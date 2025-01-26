@@ -47,6 +47,10 @@ namespace Base {
             for (int i = 0; i < parts.Length; i++) {
                 if (!string.IsNullOrWhiteSpace(parts[i])) {
                     parts[i] = char.ToUpper(parts[i][0]) + parts[i].Substring(1);
+                    // special cases
+                    if (parts[i].ToUpper() == "AI") {
+                        parts[i] = parts[i].ToUpper();
+                    }
                 }
             }
 
