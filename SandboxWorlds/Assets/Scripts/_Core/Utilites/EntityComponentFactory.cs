@@ -31,7 +31,6 @@ namespace Base.Factories {
                 // deserialize component's data with JObject
                 JObject componentData = component.Value;
                 try {
-                    // use JObject.ToObject to populate the component
                     JsonSerializer serializer = JsonSerializer.CreateDefault();
                     serializer.Populate(componentData.CreateReader(), newComponent);
                 }
