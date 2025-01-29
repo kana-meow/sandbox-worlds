@@ -1,10 +1,8 @@
 using Base.AI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
 
 namespace Base.Component {
 
@@ -15,38 +13,20 @@ namespace Base.Component {
         public BehaviorType behavior;
 
         [JsonProperty("goals")]
-        public List<string> goals;
-        private List<BaseGoal> _goals;
+        public List<JObject> goals;
+        private List<BaseGoal> inactiveGoals = new();
+        private List<BaseGoal> pendingGoals = new();
+        private List<BaseGoal> activeGoals = new();
+
+        //private Dictionary<>
 
         public override void OnInitialize() {
-            foreach (var goal in goals) {
-                Type type = Utils.GetTypeFromString(goal);
-                if (type != null) {
-                    if (typeof(BaseGoal).IsAssignableFrom(type)) {
-                        // get the constructor that takes a BaseEntity as a parameter
-                        ConstructorInfo constructor = type.GetConstructor(new Type[] { typeof(BaseEntity) });
+            inactiveGoals = Factories.AIGoalFactory.GetGoalsFromJson(Entity, goals);
 
-                        if (constructor != null) {
-                            // create the instance and pass the BaseEntity as a parameter
-                            BaseGoal goalInstance = (Activator.CreateInstance(type, new object[] { Entity })) as BaseGoal;
+            inactiveGoals[0].Activate();
+        }
 
-                            if (goalInstance != null) {
-                                _goals.Add(goalInstance);
-                            } else {
-                                Debug.LogError($"[Base.Component.AI] Failed to create an instance of goal '{type}'.");
-                            }
-                        } else {
-                            Debug.LogError($"[Base.Component.AI] Goal '{type}' does not have a constructor that accepts a BaseEntity.");
-                        }
-                    } else {
-                        Debug.LogError($"[Base.Component.AI] '{type}' does not inherit 'BaseGoal'!");
-                    }
-                } else {
-                    Debug.LogError($"[Base.Component.AI] Could not find goal script named '{Utils.ToTypeName(goal)}'!");
-                }
-            }
-
-            _goals[0].Activate();
+        private void Update() {
         }
 
         public enum BehaviorType {
