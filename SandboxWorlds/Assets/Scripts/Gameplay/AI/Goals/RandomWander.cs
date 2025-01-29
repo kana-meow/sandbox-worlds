@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Base.AI.Goal {
@@ -7,14 +8,18 @@ namespace Base.AI.Goal {
         public RandomWander(BaseEntity entity) : base(entity) {
         }
 
-        public override int Priority => throw new System.NotImplementedException();
+        [JsonProperty("value")]
+        public int value;
+
+        public override int Priority => 1;
 
         public override bool IsReplacable => throw new System.NotImplementedException();
 
         public override EntityControls[] Controls => throw new System.NotImplementedException();
 
         public override void Activate() {
-            throw new System.NotImplementedException();
+            Debug.Log(Priority);
+            Debug.Log("My value is: " + value);
         }
 
         public override bool CanActivate() {
