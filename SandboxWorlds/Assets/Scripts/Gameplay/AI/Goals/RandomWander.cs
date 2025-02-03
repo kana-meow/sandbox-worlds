@@ -18,8 +18,6 @@ namespace Base.AI.Goal {
         public override EntityControls[] Controls => throw new System.NotImplementedException();
 
         public override void Activate() {
-            Debug.Log(Priority);
-            Debug.Log("My value is: " + value);
         }
 
         public override bool CanActivate() {

@@ -21,7 +21,8 @@
             },
             "base.component.health": {
                 "value": 20
-            }
+            },
+            "base.component.body": {}
         }
     }
 }

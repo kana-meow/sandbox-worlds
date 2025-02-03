@@ -23,7 +23,6 @@ namespace Base.Factories {
 
                 if (typeof(BaseGoal).IsAssignableFrom(goalType)) {
                     BaseGoal goalInstance = (BaseGoal)Activator.CreateInstance(goalType, new object[] { entity });
-                    Debug.Log(goalData.ToString());
 
                     if (goalInstance != null) {
                         JsonSerializer serializer = JsonSerializer.CreateDefault();

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Base {
 
-    public class Utils : MonoBehaviour {
+    public class Utils {
 
         public static object ConvertToType(object value, Type targetType) {
             if (value == null) return null;
@@ -129,14 +129,55 @@ namespace Base {
                 }
             }
         }
-    }
 
-    public class JsonObjectRoot {
+        public class JsonObjectRoot {
 
-        [JsonProperty("format_version")]
-        public string FormatVersion { get; set; }
+            [JsonProperty("format_version")]
+            public string FormatVersion { get; set; }
 
-        [JsonProperty("value")]
-        public JObject Value { get; set; }
+            [JsonProperty("value")]
+            public JObject Value { get; set; }
+        }
+
+        public class Vector3Converter : JsonConverter {
+
+            public override bool CanConvert(Type objectType) {
+                return objectType == typeof(Vector3);
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+                Vector3 vector = (Vector3)value;
+                writer.WriteStartArray();
+                writer.WriteValue(vector.x);
+                writer.WriteValue(vector.y);
+                writer.WriteValue(vector.z);
+                writer.WriteEndArray();
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+                JArray array = JArray.Load(reader);
+                return new Vector3(array[0].ToObject<float>(), array[1].ToObject<float>(), array[2].ToObject<float>());
+            }
+        }
+
+        public class Vector2Converter : JsonConverter {
+
+            public override bool CanConvert(Type objectType) {
+                return objectType == typeof(Vector2);
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
+                Vector2 vector = (Vector2)value;
+                writer.WriteStartArray();
+                writer.WriteValue(vector.x);
+                writer.WriteValue(vector.y);
+                writer.WriteEndArray();
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
+                JArray array = JArray.Load(reader);
+                return new Vector2(array[0].ToObject<float>(), array[1].ToObject<float>());
+            }
+        }
     }
 }
