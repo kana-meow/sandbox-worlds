@@ -2,10 +2,10 @@
     "format_version": "0.1.0",
     "base.entity": {
         "description": {
-            "identifier": "base.passive_animal",
-            "display_name": "Passive Animal",
-            "type": "passive",
-            "category": "animal"
+            "identifier": "base.player",
+            "display_name": "Player",
+            "type": "none",
+            "category": "none"
         },
         "components": {
             "base.component.health": {
@@ -17,7 +17,10 @@
             },
             "base.component.movement": {
                 "value": 5
-            }
+            },
+            "base.component.look": {},
+            "base.component.jump": {},
+            "base.component.player_input": {}
         }
     }
 }
